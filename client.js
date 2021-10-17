@@ -43,6 +43,22 @@ app.get("/callback", (req, res) => {
 		return res.status(403).end("Forbidden");
 	}
 
+	let tokenResponse = null;
+	
+	axios({
+		method: "POST",
+		url: config.tokenEndpoint,
+		auth: {
+			username: config.clientId,
+			password: config.clientSecret,
+		},
+		data: {
+			code: req.query.code,
+		},
+	}).then(response => {
+		tokenResponse = response;
+	});
+
 	res.end();
 })
 

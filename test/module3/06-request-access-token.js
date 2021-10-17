@@ -14,7 +14,7 @@ it("/callback requests access token from the token endpoint @client-callback-req
 	setState("mystate")
 	let called = false
 	moxios.wait(() => {
-		moxios.wait(() => {
+		moxios.wait(() => {			
 			const req = moxios.requests.mostRecent()
 			if (!req) {
 				return
@@ -57,7 +57,8 @@ it("/callback requests access token from the token endpoint @client-callback-req
 			response: {
 				access_token: "mytoken",
 			},
-		})
+		});
+		
 	})
 
 	return request(app)
