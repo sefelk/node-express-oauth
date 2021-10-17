@@ -83,11 +83,19 @@ app.get("/authorize", (req, res) => {
 app.post("/approve", (req, res) => {
 	const { userName, password, requestId} = req.body;
 	
-	if(userName in users && users[userName] === password){
-		return res.end();
+	if(!(userName in users) || users[userName] !== password){
+		return res.status(401).end("Invalid username or password");
 	}
 
-	res.status(401).end();
+	const request = requests[requestId];
+
+	if(!request){
+		return res.status(401).end("Request not found");
+	}
+
+	delete requests[requestId];
+
+	res.end();
 });
 
 const server = app.listen(config.port, "localhost", function () {
