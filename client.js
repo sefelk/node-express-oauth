@@ -43,8 +43,8 @@ app.get("/callback", (req, res) => {
 		return res.status(403).end("Forbidden");
 	}
 
-	let tokenResponse = null;
-	
+	const { code } = req.query;
+
 	axios({
 		method: "POST",
 		url: config.tokenEndpoint,
@@ -53,13 +53,21 @@ app.get("/callback", (req, res) => {
 			password: config.clientSecret,
 		},
 		data: {
-			code: req.query.code,
+			code,
 		},
-	}).then(response => {
-		tokenResponse = response;
-	});
+	}).then(tokenResponse => {
+		const accessToken = tokenResponse.data.access_token;
 
-	res.end();
+		return axios({
+			method: "GET",
+			url: config.userInfoEndpoint,
+			headers: {
+				authorization: `bearer ${accessToken}`
+			}
+		})
+	}).then(userInfoResponse => {
+		res.render("welcome", { user: userInfoResponse.data })
+	});
 })
 
 const server = app.listen(config.port, "localhost", function () {
