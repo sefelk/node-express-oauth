@@ -64,7 +64,7 @@ const updateQueryString = (uri, qs) => {
 	});
 
 	url.search = params;
-	
+
     return url.toString();
 }
 
@@ -123,6 +123,10 @@ app.post("/approve", (req, res) => {
 	});
 
 	res.redirect(finalUrl);
+});
+
+app.post("/token", (req, res) => {
+	res.end();
 });
 
 const server = app.listen(config.port, "localhost", function () {
