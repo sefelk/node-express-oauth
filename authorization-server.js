@@ -126,6 +126,18 @@ app.post("/approve", (req, res) => {
 });
 
 app.post("/token", (req, res) => {
+	const { authorization} = req.headers;
+
+	if(!authorization){
+		return res.status(401).end("Authorization header missing");
+	}
+
+	const { clientId, clientSecret } = decodeAuthCredentials(authorization);
+
+	if(!(clientId in clients) || clients[clientId].clientSecret !== clientSecret){
+		return res.status(401).end("Invalid client credentials");
+	}
+
 	res.end();
 });
 
