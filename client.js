@@ -37,6 +37,15 @@ app.get("/authorize", (req, res) => {
 	res.redirect(url);
 })
 
+app.get("/callback", (req, res) => {
+
+	if(req.query.state !== state){
+		return res.status(403).end("Forbidden");
+	}
+
+	res.end();
+})
+
 const server = app.listen(config.port, "localhost", function () {
 	var host = server.address().address
 	var port = server.address().port
