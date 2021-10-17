@@ -43,10 +43,24 @@ function timeout(req, res, next) {
 	next()
 }
 
+const updateQueryString = (uri, qs) => {
+	const url = new URL(uri);
+	const params = new URLSearchParams(url.search)
+	
+	Object.entries(qs).forEach(([key, value]) => {
+		params.set(key, value);
+	});
+
+	url.search = params;
+
+    return url.toString();
+}
+
 module.exports = {
 	randomString,
 	containsAll,
 	decodeAuthCredentials,
 	deleteAllKeys,
 	timeout,
+	updateQueryString,
 }

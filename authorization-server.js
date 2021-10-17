@@ -7,6 +7,7 @@ const {
 	containsAll,
 	decodeAuthCredentials,
 	timeout,
+	updateQueryString
 } = require("./utils")
 
 const config = {
@@ -53,19 +54,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const areAllRequestedScopesGranted = (client, scope = "") => {
 	const requestedScopes = scope.split(" ");
 	return containsAll(client.scopes, requestedScopes);
-}
-
-const updateQueryString = (uri, qs) => {
-	const url = new URL(uri);
-	const params = new URLSearchParams(url.search)
-	
-	Object.entries(qs).forEach(([key, value]) => {
-		params.set(key, value);
-	});
-
-	url.search = params;
-
-    return url.toString();
 }
 
 app.get("/authorize", (req, res) => {

@@ -1,7 +1,7 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const axios = require("axios").default
-const { randomString, timeout } = require("./utils")
+const { randomString, timeout, updateQueryString } = require("./utils")
 
 const config = {
 	port: 9000,
@@ -24,7 +24,17 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get("/authorize", (req, res) => {
-	res.end();
+	state = randomString();
+
+	const url = updateQueryString(config.authorizationEndpoint, {
+		response_type: "code",
+		client_id: config.clientId,
+		redirect_uri: config.redirectUri,
+		scope: "permission:name permission:date_of_birth",
+		state,
+	});
+
+	res.redirect(url);
 })
 
 const server = app.listen(config.port, "localhost", function () {
