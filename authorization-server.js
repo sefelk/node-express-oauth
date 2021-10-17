@@ -95,6 +95,13 @@ app.post("/approve", (req, res) => {
 
 	delete requests[requestId];
 
+	const authorizationCode = randomString();
+
+	authorizationCodes[authorizationCode] = {
+		clientReq: request,
+		userName,
+	};
+
 	res.end();
 });
 
