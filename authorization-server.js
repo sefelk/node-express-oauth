@@ -50,12 +50,23 @@ app.use(timeout)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.get("/authorize", (req, res) => {
-	const clientId = req.query.client_id;
-	const isValidClient = clientId in clients;
+const areAllRequestedScopesGranted = (client, scope = "") => {
+	const requestedScopes = scope.split(" ");
+	return containsAll(client.scopes, requestedScopes);
+}
 
-	if(!isValidClient){
-		res.status(401);
+app.get("/authorize", (req, res) => {
+	const { client_id: clientId, scope } = req.query;
+	const client = clients[clientId];
+
+	if(!client){
+		return res.status(401)
+			.end("Client not authorized");
+	}
+	
+	if(!areAllRequestedScopesGranted(client, scope)){
+		return res.status(401)
+			.end("Invalid scopes requested");
 	}
 
 	res.end();
