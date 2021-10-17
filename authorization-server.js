@@ -138,6 +138,15 @@ app.post("/token", (req, res) => {
 		return res.status(401).end("Invalid client credentials");
 	}
 
+	const { code } = req.body;
+	const obj = authorizationCodes[code];
+
+	if(!obj){
+		return res.status(401).end("Invalid authorization code");
+	}
+
+	delete authorizationCodes[code];
+
 	res.end();
 });
 
