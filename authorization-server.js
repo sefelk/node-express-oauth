@@ -55,6 +55,19 @@ const areAllRequestedScopesGranted = (client, scope = "") => {
 	return containsAll(client.scopes, requestedScopes);
 }
 
+const updateQueryString = (uri, qs) => {
+	const url = new URL(uri);
+	const params = new URLSearchParams(url.search)
+	
+	Object.entries(qs).forEach(([key, value]) => {
+		params.set(key, value);
+	});
+
+	url.search = params;
+	
+    return url.toString();
+}
+
 app.get("/authorize", (req, res) => {
 	const { client_id: clientId, scope } = req.query;
 	const client = clients[clientId];
@@ -102,7 +115,14 @@ app.post("/approve", (req, res) => {
 		userName,
 	};
 
-	res.end();
+	const { redirect_uri, state } = request;
+
+	const finalUrl = updateQueryString(redirect_uri, {
+		code: authorizationCode,
+		state
+	});
+
+	res.redirect(finalUrl);
 });
 
 const server = app.listen(config.port, "localhost", function () {
