@@ -154,11 +154,17 @@ app.post("/token", (req, res) => {
 		scope,
 	};
 
-	const privateKey = fs.readFileSync("./assets/private_key.pem");
+	const token = jwt.sign(payload, config.privateKey, { 
+		algorithm: "RS256", 
+		expiresIn: 300, 
+		issuer: `http://localhost:${config.port}`
+	});
 
-	const token = jwt.sign(payload, privateKey, { algorithm: "RS256" });
-
-	res.json(token);
+	res.json({
+		access_token: token,
+		token_type: "Bearer",
+		scope,
+	});
 });
 
 const server = app.listen(config.port, "localhost", function () {
