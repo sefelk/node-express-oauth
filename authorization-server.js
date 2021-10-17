@@ -73,7 +73,11 @@ app.get("/authorize", (req, res) => {
 
 	requests[requestId] = req.query;
 
-	res.end();
+	res.render("login", {
+		client,
+		scope,
+		requestId
+	});
 });
 
 const server = app.listen(config.port, "localhost", function () {
